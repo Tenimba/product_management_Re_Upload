@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accès refusé</title>
+    <link rel="icon" type="image/x-icon" href="/logo/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" 
+          rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" 
+          crossorigin="anonymous">
+</head>
+<body>
+    <div class="container text-center" style="margin-top: 20%">
+        <h1 class="display-4 text-danger">Interdit!!!!</h1>
+        <h3>Cette page est uniquement réservée aux administrateurs! Veuillez revenir en arrière et vous connecter en tant qu'administrateur.</h3>
+        <div class="mt-4">
+            <a class="btn btn-primary" th:href="@{/login}">Retour à la connexion</a>
+        </div>
+    </div>
+</body>
+</html>

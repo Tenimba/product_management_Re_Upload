@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un nouveau produit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="icon" type="image/x-icon" href="/logo/logo.png">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        h1 {
+            margin-top: 100px;
+            text-align: center;
+            color: #343a40;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .navbar-brand img {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="/logo/logo.svg" alt="Logo" width="30" height="24">
+                Système de gestion de produits
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Créer un produit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/listeSansCon}">Liste des produits</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('admin')">
+                        <a class="nav-link" th:href="@{/users}">Liste des utilisateurs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">Se déconnecter</a>
+                    </li>
+                </ul>
+                <form th:action="@{/recherche}" method="post" class="d-flex ms-3">
+                    <select name="critere" class="form-select me-2" required>
+                        <option value="nom">Nom</option>
+                        <option value="fournisseur">Fournisseur</option>
+                    </select>
+                    <input class="form-control me-2" type="search" name="recherche" placeholder="Recherche..." aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Rechercher</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <h1 th:text="${produit != null ? 'Modifier le produit' : 'Créer un nouveau produit'}">Créer un nouveau produit</h1>
+    <div class="form-container">
+        <form th:action="@{${produit != null ? '/create/' + produit.id : '/create'}}" 
+              method="POST" 
+              enctype="multipart/form-data">
+            
+            <div class="mb-3">
+                <label for="nom" class="form-label">Nom</label>
+                <input type="text" class="form-control" id="nom" name="nom" 
+                       th:value="${produit != null ? produit.nom : ''}"
+                       placeholder="Entrez le nom du produit" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="prix" class="form-label">Prix</label>
+                <input type="number" class="form-control" id="prix" name="prix" 
+                       th:value="${produit != null ? produit.prix : ''}"
+                       placeholder="Entrez le prix" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="devise" class="form-label">Devise</label>
+                <select class="form-select" id="devise" name="devise" required>
+                    <option value="EUR" th:selected="${produit != null && produit.devise == 'EUR'}">EUR</option>
+                    <option value="USD" th:selected="${produit != null && produit.devise == 'USD'}">USD</option>
+                    <option value="GBP" th:selected="${produit != null && produit.devise == 'GBP'}">GBP</option>
+                    <option value="XOF" th:selected="${produit != null && produit.devise == 'XOF'}">XOF</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="taxe" class="form-label">Taxe</label>
+                <input type="number" class="form-control" id="taxe" name="taxe" 
+                       th:value="${produit != null ? produit.taxe : ''}"
+                       placeholder="Entrez la taxe" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="dateExpiration" class="form-label">Date d'expiration</label>
+                <input type="date" class="form-control" id="dateExpiration" name="dateExpiration" 
+                       th:value="${produit != null ? produit.dateExpiration : ''}"
+                       required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="fournisseur" class="form-label">Fournisseur</label>
+                <input type="text" class="form-control" id="fournisseur" name="fournisseur" 
+                       th:value="${produit != null ? produit.fournisseur : ''}"
+                       placeholder="Entrez le fournisseur" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="imageFile" class="form-label">Image</label>
+                <!-- Afficher l'image existante si disponible -->
+                <div th:if="${produit != null && produit.image != null}" class="mb-2">
+                    <img th:src="@{'/Images/' + ${produit.image}}" class="img-thumbnail" style="max-height: 200px;">
+                </div>
+                <input type="file" class="form-control" id="imageFile" name="imageFile">
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100" 
+                    th:text="${produit != null ? 'Modifier' : 'Ajouter'}">Ajouter</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+</body>
+</html>
